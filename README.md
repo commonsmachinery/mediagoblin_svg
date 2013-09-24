@@ -1,0 +1,2 @@
+mediagoblin_svg
+===============
