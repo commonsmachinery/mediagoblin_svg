@@ -1,0 +1,3 @@
+include README.*
+recursive-include mediagoblin_svg *.ini
+recursive-include mediagoblin_svg *.html
