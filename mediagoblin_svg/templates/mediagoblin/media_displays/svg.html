@@ -38,7 +38,9 @@
 
 {% block mediagoblin_sidebar %}
   <h3>{% trans %}Download{% endtrans %}</h3>
+  <p>
   <a href="{{ request.app.public_store.file_url(
               media.media_files.original) }}">{% trans %}Original file{% endtrans %}</a>
   {% template_hook("image_sideinfo") %}
+  </p>
 {% endblock %}
