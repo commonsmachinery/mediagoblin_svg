@@ -112,24 +112,37 @@ class CommonSvgProcessor(MediaProcessor):
             size = (mgg.global_config['media:medium']['max_width'],
                     mgg.global_config['media:medium']['max_height'])
 
-        preview_filename = os.path.join(self.workbench.dir,
-            self.name_builder.fill('{basename}.preview.png'))
+        if self.svg_config['svg_previews']:
+            # delete existing thumbnail, if it doesn't match the original
+            if self.entry.media_files.has_key('preview') and \
+               self.entry.media_files['preview'] != self.entry.media_files['original']:
+                mgg.public_store.delete_file(self.entry.media_files['preview'])
+            self.entry.media_files['preview'] = self.entry.media_files.get('original')
+        else:
+            preview_filename = os.path.join(self.workbench.dir,
+                self.name_builder.fill('{basename}.preview.png'))
 
-        render_preview(self.process_filename, preview_filename, size)
-        store_public(self.entry, 'preview', preview_filename,
-                     self.name_builder.fill('{basename}.preview.png'))
+            render_preview(self.process_filename, preview_filename, size)
+            store_public(self.entry, 'preview', preview_filename,
+                         self.name_builder.fill('{basename}.preview.png'))
 
     def generate_thumb(self, size=None):
         if not size:
             size = (mgg.global_config['media:thumb']['max_width'],
                     mgg.global_config['media:thumb']['max_height'])
 
-        thumb_filename = os.path.join(self.workbench.dir,
-            self.name_builder.fill('{basename}.thumbnail.png'))
-        
-        render_preview(self.process_filename, thumb_filename, size)
-        store_public(self.entry, 'thumb', thumb_filename,
-                     self.name_builder.fill('{basename}.thumbnail.png'))
+        if self.svg_config['svg_thumbnails']:
+            # delete existing thumbnail, if it doesn't match the original
+            if self.entry.media_files.has_key('thumb') and \
+               self.entry.media_files['thumb'] != self.entry.media_files['original']:
+                mgg.public_store.delete_file(self.entry.media_files['thumb'])
+            self.entry.media_files['thumb'] = self.entry.media_files.get('original')
+        else:
+            thumb_filename = os.path.join(self.workbench.dir,
+                self.name_builder.fill('{basename}.thumbnail.png'))
+            
+            render_preview(self.process_filename, thumb_filename, size)
+            store_public(self.entry, 'thumb', thumb_filename)
 
     def copy_original(self):
         copy_original(
@@ -185,9 +198,10 @@ class InitialProcessor(CommonSvgProcessor):
 
     def process(self, size=None, thumb_size=None):
         self.common_setup()
+
+        self.copy_original()
         self.generate_preview(size=size)
         self.generate_thumb(size=thumb_size)
-        self.copy_original()
         self.delete_queue_file()
 
 
@@ -232,7 +246,7 @@ class Resizer(CommonSvgProcessor):
 
         parser.add_argument(
             'file',
-            choices=['medium', 'thumb'])
+            choices=['preview', 'thumb'])
 
         return parser
 
@@ -242,9 +256,8 @@ class Resizer(CommonSvgProcessor):
             args, ['size', 'file'])
 
     def process(self, file, size=None):
-        print "process", "file:", file
         self.common_setup()
-        if file == 'medium':
+        if file == 'preview':
             self.generate_preview(size=size)
         elif file == 'thumb':
             self.generate_thumb(size=size)

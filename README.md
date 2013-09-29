@@ -27,11 +27,22 @@ And restart the server.
 Configuration
 -------------
 
-To display SVG images directly in the browser, specify the `serve_img` option
-in the configuration file as follows:
+Displaying SVG images directly in the browser is controlled by two options called
+`svg_thumbnails` and `svg_previews`. Specify them in your mediagoblin_local.ini
+as follows:
 
     [[mediagoblin_svg]]
-    serve_img=True
+    svg_previews=True
+    svg_thumbnails=False
+
+It's recommended to run a reprocessing command after changing either of these
+options:
+
+    ./bin/gmg reprocess bulk_run mediagoblin_svg resize preview
+    ./bin/gmg reprocess bulk_run mediagoblin_svg resize thumb
+
+Disclaimer
+----------
 
 The SVG plugin is highly experimental at the moment and using it with your
 MediaGoblin instance may break things, so please use with caution.

@@ -32,6 +32,7 @@ class SVGMediaManager(MediaManagerBase):
     human_readable = 'SVG'
     display_template = 'mediagoblin/media_displays/svg.html'
     default_thumb = 'images/media_thumbs/image.png'
+    media_fetch_order = [u'preview', u'original', 'thumb']
 
 
 def get_media_type_and_manager(ext):

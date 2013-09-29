@@ -18,22 +18,12 @@
 
 {% extends 'mediagoblin/user_pages/media.html' %}
 
-{% set serve_img = global_config['plugins'].get('mediagoblin_svg', {}).get('serve_img', False) %}
-
 {% block mediagoblin_head %}
   {{ super() }}
 {% endblock mediagoblin_head %}
 
 {% block mediagoblin_media %}
-  {% if serve_img %}
-    <img class="media_image"
-      src="{{request.app.public_store.file_url(media.media_files.original)}}"
-    />
-  {% else %}
-    <img class="media_image"
-      src="{{request.app.public_store.file_url(media.media_files.preview)}}"
-    />
-  {% endif %}
+  <img class="media_image" src="{{request.app.public_store.file_url(media.media_files.preview)}}"/>
 {% endblock %}
 
 {% block mediagoblin_sidebar %}
